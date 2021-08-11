@@ -1,0 +1,309 @@
+local Material = loadstring (game: HttpGet ("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua")) ()
+
+локальная библиотека =
+    Материал.Нагрузка (
+    {
+        Title = "Взрыв меча 2 - Brinen | Script",
+        Стиль = 1,
+        РазмерX = 400,
+        SizeY = 400,
+        Theme = "Аква",
+        ColorOverrides = {
+            MainFrame = Color3.fromRGB (35,35,35)
+        }
+    }
+)
+
+- Переменные
+
+местный s =
+    setmetatable (
+    {},
+    {
+        __index = функция (самообслуживание, услуга)
+            возврат игры: GetService (услуга)
+        конец,
+        __newindex = функция (сам, ключ)
+            self [ключ] = ноль
+        конец
+    }
+)
+
+местный сер;
+
+для i, v в следующем, getreg () сделать
+    если typeof (v) == "таблица", то
+        если rawget (v, «Услуги»), то
+            Ser = v.Services
+            сломать
+        конец
+    конец
+конец
+
+локальный ключ = getupvalue (Ser.Combat.Init, 2)
+
+local user = s ["Игроки"]. LocalPlayer
+local ReplicatedStorage = s ["ReplicatedStorage"]
+
+getgenv (). TweenSpeed ​​= 50
+getgenv (). Шпильки = 5000
+
+-- так далее
+
+local BossNames = {
+    "Ужасный волк",
+    "Раджин Король воров",
+    "Пчеловод Борик",
+    "Горрок Защитник рощи",
+    "Ледяной король Ра'таэ",
+    "Керах Забытый Голем",
+    "Лев Ират",
+    "Ротлинг",
+    "Огненный скорпион",
+    "Са'джун Центурианский вождь",
+    «Фрогазоид»,
+    "Смэшрум",
+    "Гиппогриф",
+    "Формауг, гигант джунглей",
+    "Жнец горгульи",
+    "Мортис Пылающий Илеп",
+    «Полисерпант», г.
+    «Баал»,
+    "Мрачный надзиратель",
+    "Да",
+    "Ра",
+    "Ка",
+    «Яйцо Мимик» - пасхальное мероприятие.
+}
+
+- Функции
+
+локальная функция Damage (Enemy)
+    --if (не getgenv (). MultiplyDamage), затем
+        --ReplicatedStorage.Event: FireServer ("Combat", key, {"Attack", nil, "1", Enemy})
+        --возвращение
+    --конец
+    - скоро будет
+    
+    ReplicatedStorage.Event: FireServer ("Навыки", {"UseSkill", "Вызов пистолета"})
+    ReplicatedStorage.Event: FireServer ("Combat", key, {"Attack", "Summon Pistol", "1", Enemy})
+конец
+
+локальная функция UserWalkSpeed ​​(человек, скорость)
+    если человек и человек. персонаж, то
+        если person.Character: FindFirstChildWhichIsA ("Гуманоид"), то
+            person.Character: FindFirstChildWhichIsA ("Гуманоид"). WalkSpeed ​​= скорость
+        конец
+    конец
+конец
+
+локальная функция GoInvisible ()
+    if (user.Character и user.Character: FindFirstChild ("LowerTorso") или user.Character: FindFirstChildWhichIsA ("LowerTorso")), то
+        user.character.LowerTorso.Root: Destroy ()
+    конец
+конец
+
+локальная функция Nearest ()
+    local d = getgenv (). Шпильки
+    местный t = ноль
+
+    для i, v в парах (game.Workspace.Mobs: GetChildren ()) do
+        если
+            (v.PrimaryPart ~ = nil и v: FindFirstChild ("HumanoidRootPart") и v: FindFirstChild ("Паспортная табличка") и
+                v. Родитель и
+                v: FindFirstChild ("Сущность") и
+                v.Entity.Health.Value> 0)
+         потом
+            если getgenv (). TargetBosses, то
+                для _, я в следующем, BossNames сделать
+                    if (i == v.Name) то
+                        вернуть v
+                    конец
+                конец
+            конец
+            local Magnitude = (v.PrimaryPart.CFrame.p - Workspace.CurrentCamera.CFrame.p) .Magnitude
+            если (Величина <d и Величина> 0), то
+                d = величина
+                т = v
+            конец
+        конец
+    конец
+    
+    вернуть т
+конец
+
+
+- [[
+скоро
+
+локальная функция NearestPlayer ()
+    local Root = пользователь и пользователь: FindFirstChild ("HumanoidRootPart")
+    если нет (пользователь или корень), то верните конец
+    
+    local d = getgenv (). Шпильки
+    местный t = ноль
+
+    для i, v в парах (game.Players: GetChildren ()) выполните
+        if (v ~ = пользователь и v.Character и v.Character: FindFirstChild ("HumanoidRootPart") и v.Character.Humanoid.Health> 0)
+         потом
+            local Magnitude = (user.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position) .Magnitude
+            если (Величина <d), то
+                d = величина
+                т = v
+            конец
+        конец
+    конец
+    
+    вернуть т
+конец
+-]]
+
+- Разделы -
+
+местный Main =
+    Библиотека.Новая (
+    {
+        Title = "Взрыв меча 2"
+    }
+)
+
+местное Разное =
+    Библиотека.Новая (
+    {
+        Title = "Разное"
+    }
+)
+
+локальные настройки =
+    Библиотека.Новая (
+    {
+        Title = "Настройки"
+    }
+)
+
+- Авто -
+
+местная AutoFarm =
+    Main.Toggle (
+    {
+        Text = "AutoFarm",
+        Обратный вызов = функция (Значение)
+            getgenv (). autofarm = Значение
+            в то время как getgenv (). autofarm делает        
+                local Enemy = Ближайший ()
+
+                если (Enemy ~ = nil), то
+                    tweenService, tweenInfo = s ["TweenService"], TweenInfo.new ((user.Character.HumanoidRootPart.Position - Enemy.HumanoidRootPart.Position) .Magnitude / getgenv (). TweenSpeed, Enum.EasingStyle.Linear)
+                    T = tweenService: Create (user.Character.HumanoidRootPart, tweenInfo, {CFrame = Enemy.PrimaryPart.CFrame * CFrame.new (0, 15, 0)})
+                    T: Играть ()
+                конец
+                ждать()
+            конец
+        конец,
+        Включено = ложь
+    }
+)
+
+местный Киллаура =
+    Main.Toggle (
+    {
+        Text = "KillAura",
+        Обратный вызов = функция (Значение)
+            getgenv (). killaura = Значение
+            в то время как getgenv (). killaura и wait () делают
+                local Enemy = Ближайший ()
+
+                если (Enemy ~ = nil), то
+                    подождите (.3)
+                    Повреждение (Enemy.Entity.Parent)
+                конец
+            конец
+        конец,
+        Включено = ложь
+    }
+)
+
+местные TargetBosses =
+    Main.Toggle (
+    {
+        Text = "Приоритет начальникам",
+        Обратный вызов = функция (Значение)
+            getgenv (). TargetBosses = Значение
+        конец,
+        Включено = ложь
+    }
+)
+
+- Разное -
+
+local TweenSpeed ​​=
+    Разное Слайдер (
+    {
+        Text = "WalkSpeed",
+        Обратный вызов = функция (Значение)
+            UserWalkSpeed ​​(пользователь, значение)
+        конец,
+        Мин. = 16,
+        Макс = 100,
+        Def = 0
+    }
+)
+
+местная невидимость =
+    Разная кнопка (
+    {
+        Text = "Невидимость",
+        Обратный вызов = функция ()
+            GoInvisible ()
+        конец
+    }
+)
+
+-- Настройки --
+
+local EntityDistance =
+    Настройки.Slider (
+    {
+        Text = "Максимальное расстояние до объекта",
+        Обратный вызов = функция (Значение)
+            getgenv (). Studs = Значение
+        конец,
+        Мин. = 150,
+        Макс = 10000,
+        По умолчанию = 5000
+    }
+)
+
+local TweenSpeed ​​=
+    Настройки.Slider (
+    {
+        Text = "Скорость анимации",
+        Обратный вызов = функция (Значение)
+            getgenv (). TweenSpeed ​​= Значение
+        конец,
+        Мин. = 10,
+        Макс = 125,
+        По умолчанию = 50
+    }
+)
+
+spawn (функция ()
+    в то время как правда
+        если (user.Character ~ = nil и getgenv (). autofarm), то
+            локальная функция NoClipping ()
+                если user.Character.Humanoid.RigType == Enum.HumanoidRigType.R6, то
+                    для _, части в следующем, (user.Character: GetDescendants ()) do
+                        if (Parts: IsA ("BasePart") и Parts.CanCollide == true), то
+                            Parts.CanCollide = false
+                        конец
+                    конец
+                еще
+                    user.Character.Humanoid: ChangeState (11)
+                конец
+            конец
+            
+            spawn (NoClipping)
+        конец
+        ждать()
+    конец
+конец)
